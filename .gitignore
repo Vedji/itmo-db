@@ -5,3 +5,6 @@
 /idz1/.env
 /idz1/pgpass
 /idz1/venv/
+/idz1/__pycache__/
+/idz1/alembic/__pycache__/
+/idz1/alembic/versions/__pycache__/

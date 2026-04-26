@@ -1,23 +1,11 @@
 from faker import Faker
-import random, psycopg2
-from dotenv import load_dotenv
-import os
-
-
-load_dotenv()
+import random
 
 
 fake = Faker('ru_RU')
-conn = psycopg2.connect(
-    host="localhost",
-    port=os.getenv("POSTGRES_PORT"),
-    dbname=os.getenv("POSTGRES_DB"),
-    user=os.getenv("POSTGRES_USER"),
-    password=os.getenv("POSTGRES_PASSWORD")
-)
-cur = conn.cursor()
 
 statuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled']
+sql_request = []
 
 for i in range(1000):
     products = random.sample([
@@ -29,13 +17,13 @@ for i in range(1000):
     prices = ', '.join(str(p[1]) for p in products)
     qtys = [random.randint(1, 3) for _ in products]
     total = sum([qtys[p] * products[p][1] for p in range(len(products))])
-    
-    cur.execute("""INSERT INTO orders_raw VALUES
-        (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
-        (i, fake.date_this_year(),
-         fake.name(), fake.email(), fake.phone_number(),
-         fake.address(), names, prices, 
-         ', '.join(map(lambda x: str(x), qtys)),
-         total, random.choice(statuses)))
+    content = """INSERT INTO orders_raw VALUES ({},'{}','{}','{}','{}','{}','{}','{}','{}',{},'{}');\n""".format(i, fake.date_this_year(),
+    fake.name(), fake.email(), fake.phone_number(),
+    fake.address(), names, prices, 
+    ', '.join(map(lambda x: str(x), qtys)),
+    total, random.choice(statuses))
+    sql_request.append(content)
 
-conn.commit()
+with open("./sql/raw_fake_data.sql", "w", encoding="utf-8") as f:
+    f.writelines(sql_request)
+
