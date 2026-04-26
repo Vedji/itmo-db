@@ -1,6 +1,7 @@
 # OS files
 .DS_Store
 
-# 
+# idz-1 ignore
 /idz1/.env
 /idz1/pgpass
+/idz1/venv/
