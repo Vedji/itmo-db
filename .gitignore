@@ -2,5 +2,5 @@
 .DS_Store
 
 # 
-.env
-pgpass
+/idz1/.env
+/idz1/pgpass
